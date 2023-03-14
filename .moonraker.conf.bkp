@@ -1,0 +1,105 @@
+[server]
+host = 0.0.0.0
+port = 7125
+
+[data_store]
+temperature_store_size = 600
+gcode_store_size = 1000
+
+[file_manager]
+enable_object_processing = True
+
+[authorization]
+force_logins = False
+cors_domains = 
+	*.local
+	*.lan
+	*://app.fluidd.xyz
+	voron.local
+trusted_clients = 
+	10.0.0.0/8
+	100.0.0.0/8
+	127.0.0.0/8
+	169.254.0.0/16
+	172.16.0.0/12
+	192.168.0.0/16
+	FE80::/10
+	::1/128
+
+[octoprint_compat]
+
+[notifier pushover_error]
+url = pover://{secrets.pushover_creds.user}@{secrets.pushover_creds.token}/{secrets.pushover_creds.device}?priority=emergency&expire=3600&retry=300&sound=alien
+events = error
+title = voron3: EMERG - {event_args[1].filename}
+body = {event_name}: {event_args[1].message}
+attach = http://voron.gaehl.local/webcam2/?action=snapshot
+
+[notifier pushover_cancel]
+url = pover://{secrets.pushover_creds.user}@{secrets.pushover_creds.token}/{secrets.pushover_creds.device}?priority=emergency&sound=siren
+events = cancelled
+title = voron3: EMERG - {event_args[1].filename}
+body = {event_name}: {event_args[1].message}
+attach = http://voron.gaehl.local/webcam2/?action=snapshot
+
+[notifier pushover_pause]
+url = pover://{secrets.pushover_creds.user}@{secrets.pushover_creds.token}/{secrets.pushover_creds.device}?priority=high&expire=1800&retry=180&sound=tugboat
+events = pause
+title = voron3: HIGH - {event_name}d
+body = {event_name}d: {event_args[1].filename}
+attach = http://voron.gaehl.local/webcam2/?action=snapshot
+
+[notifier pushover_resume]
+url = pover://{secrets.pushover_creds.user}@{secrets.pushover_creds.token}/{secrets.pushover_creds.device}?priority=high&sound=tugboat
+events = resume
+title = voron3: HIGH - {event_name}d
+body = {event_name}d: {event_args[1].filename}
+attach = http://voron.gaehl.local/webcam2/?action=snapshot
+
+[notifier pushover_start]
+url = pover://{secrets.pushover_creds.user}@{secrets.pushover_creds.token}/{secrets.pushover_creds.device}
+events = started
+title = voron3: Starting to print
+body = Printing: {event_args[1].filename}
+attach = http://voron.gaehl.local/webcam2/?action=snapshot
+
+[notifier pushover_complete]
+url = pover://{secrets.pushover_creds.user}@{secrets.pushover_creds.token}/{secrets.pushover_creds.device}
+events = complete
+title = voron3: Print completed
+body = Completed: {event_args[1].filename}
+attach = http://voron.gaehl.local/webcam2/?action=snapshot
+
+[history]
+
+[update_manager]
+enable_auto_refresh = True
+
+[update_manager client fluidd]
+type = web
+channel = stable
+repo = cadriel/fluidd
+path = ~/fluidd
+
+[update_manager client z_calibration]
+type = git_repo
+path = ~/klipper_z_calibration
+origin = https://github.com/protoloft/klipper_z_calibration.git
+install_script = install.sh
+managed_services = klipper
+
+[update_manager KlipperScreen]
+type = git_repo
+path = ~/KlipperScreen
+origin = https://github.com/jordanruthe/KlipperScreen.git
+env = ~/.KlipperScreen-env/bin/python
+requirements = scripts/KlipperScreen-requirements.txt
+install_script = scripts/KlipperScreen-install.sh
+managed_services = KlipperScreen
+
+[update_manager mainsail]
+type = web
+channel = stable
+repo = mainsail-crew/mainsail
+path = ~/mainsail
+
